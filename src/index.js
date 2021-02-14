@@ -104,52 +104,126 @@ import './index.css';
 
 //  state in react
 
-class CountCharacters extends React.Component {
+// class CountCharacters extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       message: ''
+//     };
+//   }
+
+//   onMessageChange(value){
+//     this.setState(
+//       {
+//         message: `Message has ${value.length} length`
+//       }
+//     )
+//   }
+//   render(){
+//     return <div>
+//       <h1>Welcome to count character...</h1>
+//       <p><label><input type="text" onChange={e=> this.onMessageChange(e.target.value)}></input></label></p>
+//       <p><label>{this.state.message}</label></p>
+//     </div>
+//   }
+// }
+
+// class Employee extends React.Component {
+//   state = {counter: 0}
+//   // counter = 0
+//   addEmployee = ()=>{
+//     this.setState({counter: this.state.counter + 1});
+//     // this.counter = this.counter + 1;
+//     // alert("Employee Added");
+//     // alert(this.counter);
+//   }
+//   render(){
+//     return <div>
+//       <h2> Welcome to Employee component</h2>
+//       <p>Counter clicked {this.state.counter} Times</p>
+//       <p>
+//         <button onClick={this.addEmployee}>Add Employee</button>
+//       </p>
+//     </div>
+//   }
+// }
+
+// // const element = <Employee id="51772545" name="saravana" departname="BCA"></Employee>
+
+// const element = <CountCharacters></CountCharacters>
+
+
+// *************************************************************************************************
+
+// Interaction between components
+
+
+class Employee extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      message: ''
-    };
+      updatedSalary: null
+    }
   }
 
-  onMessageChange(value){
-    this.setState(
-      {
-        message: `Message has ${value.length} length`
-      }
-    )
+  getUpdatedSalary = (salary) =>{
+    this.setState({
+      updateSalary: salary
+    })
   }
-  render(){
-    return <div>
-      <h1>Welcome to count character...</h1>
-      <p><label><input type="text" onChange={e=> this.onMessageChange(e.target.value)}></input></label></p>
-      <p><label>{this.state.message}</label></p>
-    </div>
-  }
-}
 
-class Employee extends React.Component {
-  state = {counter: 0}
-  // counter = 0
-  addEmployee = ()=>{
-    this.setState({counter: this.state.counter + 1});
-    // this.counter = this.counter + 1;
-    // alert("Employee Added");
-    // alert(this.counter);
-  }
-  render(){
+  render() {
     return <div>
       <h2> Welcome to Employee component</h2>
-      <p>Counter clicked {this.state.counter} Times</p>
       <p>
-        <button onClick={this.addEmployee}>Add Employee</button>
+        <label>Employee Id: <b>{this.props.id}</b></label>
       </p>
+      <p>
+        <label>Employee Name: <b>{this.props.name}</b></label>
+      </p>
+      <p>
+        <label>Updated Total Salary: <b>{this.state.updateSalary}</b></label>
+      </p>
+      <Salary basic={this.props.basic} hra={this.props.hra} onSalaryChanged={this.getUpdatedSalary}></Salary>
     </div>
   }
 }
 
-// const element = <Employee id="51772545" name="saravana" departname="BCA"></Employee>
+class Salary extends React.Component {
+  constructor(props) {
+    super(props);    
+    this.state = {
+      basic: this.props.basic,
+      hra: this.props.hra,
+      basicRef: React.createRef()
+    }
 
-const element = <CountCharacters></CountCharacters>
+    this.basicRef = React.createRef();
+    this.hraRef = React.createRef();
+    this.updateSalary = this.updateSalary.bind(this);
+  }
+
+  updateSalary = () => {
+    let salary = parseInt(this.basicRef.current.value) + parseInt(this.hraRef.current.value);
+    this.props.onSalaryChanged(salary);
+  }
+
+  render(){
+    return <div>
+      <h1>Salary details...</h1>
+      <p>
+        <label>Basic Salary: <input type="text" ref={this.basicRef} defaultValue={this.state.basic}></input></label>
+      </p>
+      <p>
+        <label>HRA: <input type="text" ref={this.hraRef} defaultValue={this.state.hra}></input></label>
+      </p>
+      <button onClick={this.updateSalary}>Update</button>
+    </div>
+  }
+}
+
+const element = <Employee id="51772545" name="Saravana" basic="15000" hra="14000"></Employee>
+
 
 ReactDOM.render(element, document.getElementById('root'));
