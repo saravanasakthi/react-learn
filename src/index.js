@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react';
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
@@ -158,72 +157,129 @@ import './index.css';
 // Interaction between components
 
 
-class Employee extends React.Component {
+// class Employee extends React.Component {
 
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       updatedSalary: null
+//     }
+//   }
+
+//   getUpdatedSalary = (salary) =>{
+//     this.setState({
+//       updateSalary: salary
+//     })
+//   }
+
+//   render() {
+//     return <div>
+//       <h2> Welcome to Employee component</h2>
+//       <p>
+//         <label>Employee Id: <b>{this.props.id}</b></label>
+//       </p>
+//       <p>
+//         <label>Employee Name: <b>{this.props.name}</b></label>
+//       </p>
+//       <p>
+//         <label>Updated Total Salary: <b>{this.state.updateSalary}</b></label>
+//       </p>
+//       <Salary basic={this.props.basic} hra={this.props.hra} onSalaryChanged={this.getUpdatedSalary}></Salary>
+//     </div>
+//   }
+// }
+
+// class Salary extends React.Component {
+//   constructor(props) {
+//     super(props);    
+//     this.state = {
+//       basic: this.props.basic,
+//       hra: this.props.hra
+//     }
+
+//     this.basicRef = React.createRef();
+//     this.hraRef = React.createRef();
+//     this.updateSalary = this.updateSalary.bind(this);
+//   }
+
+//   updateSalary = () => {
+//     let salary = parseInt(this.basicRef.current.value) + parseInt(this.hraRef.current.value);
+//     this.props.onSalaryChanged(salary);
+//   }
+
+//   render(){
+//     return <div>
+//       <h1>Salary details...</h1>
+//       <p>
+//         <label>Basic Salary: <input type="text" ref={this.basicRef} defaultValue={this.state.basic}></input></label>
+//       </p>
+//       <p>
+//         <label>HRA: <input type="text" ref={this.hraRef} defaultValue={this.state.hra}></input></label>
+//       </p>
+//       <button onClick={this.updateSalary}>Update</button>
+//     </div>
+//   }
+// }
+
+// const element = <Employee id="51772545" name="Saravana" basic="15000" hra="14000"></Employee>
+
+
+// *****************************************************************************************************************************
+
+// component interaction using context
+
+export const EmployeeContext = React.createContext();
+
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      updatedSalary: null
+      Id: 51772545,
+      Name: "Saravana",
+      Location: "Chennai",
+      Salary: "15000"
     }
   }
-
-  getUpdatedSalary = (salary) =>{
-    this.setState({
-      updateSalary: salary
-    })
-  }
-
   render() {
     return <div>
-      <h2> Welcome to Employee component</h2>
-      <p>
-        <label>Employee Id: <b>{this.props.id}</b></label>
-      </p>
-      <p>
-        <label>Employee Name: <b>{this.props.name}</b></label>
-      </p>
-      <p>
-        <label>Updated Total Salary: <b>{this.state.updateSalary}</b></label>
-      </p>
-      <Salary basic={this.props.basic} hra={this.props.hra} onSalaryChanged={this.getUpdatedSalary}></Salary>
-    </div>
+      <h2>Welcome to App Component</h2>
+      <p>{this.state.Id}</p>
+      <EmployeeContext.Provider value={this.state}>
+        <Employee />
+      </EmployeeContext.Provider>      
+    </div>;
+  }
+}
+
+class Employee extends React.Component {
+  render() {
+    return <div>
+      <h2>Welcome to Employee Component...</h2>      
+      <EmployeeContext.Consumer>
+        {data => {
+          return data.Id;
+        }}
+      </EmployeeContext.Consumer>
+      <Salary></Salary>
+    </div>;
   }
 }
 
 class Salary extends React.Component {
-  constructor(props) {
-    super(props);    
-    this.state = {
-      basic: this.props.basic,
-      hra: this.props.hra,
-      basicRef: React.createRef()
-    }
-
-    this.basicRef = React.createRef();
-    this.hraRef = React.createRef();
-    this.updateSalary = this.updateSalary.bind(this);
-  }
-
-  updateSalary = () => {
-    let salary = parseInt(this.basicRef.current.value) + parseInt(this.hraRef.current.value);
-    this.props.onSalaryChanged(salary);
-  }
-
-  render(){
+  render() {
     return <div>
-      <h1>Salary details...</h1>
-      <p>
-        <label>Basic Salary: <input type="text" ref={this.basicRef} defaultValue={this.state.basic}></input></label>
-      </p>
-      <p>
-        <label>HRA: <input type="text" ref={this.hraRef} defaultValue={this.state.hra}></input></label>
-      </p>
-      <button onClick={this.updateSalary}>Update</button>
-    </div>
+      <h2>Welcome to Salary Component...</h2>
+      <EmployeeContext.Consumer>
+        {data => {
+          return data.Id;
+        }}
+      </EmployeeContext.Consumer>
+    </div>;
   }
 }
 
-const element = <Employee id="51772545" name="Saravana" basic="15000" hra="14000"></Employee>
+const element = <App></App>
+
 
 
 ReactDOM.render(element, document.getElementById('root'));
