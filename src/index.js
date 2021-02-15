@@ -226,77 +226,113 @@ import './index.css';
 
 // *****************************************************************************************************************************
 
-// component interaction using context
+// component interaction using context and update component
 
-export const EmployeeContext = React.createContext({
-  data: '',
-  changeEmployeeInfo: () => {}
-});
+// export const EmployeeContext = React.createContext({
+//   data: '',
+//   changeEmployeeInfo: () => {}
+// });
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: {
-        Id: 51772545,
-        Name: "Saravana",
-        Location: "Chennai",
-        Salary: "15000"
-      },
-      changeEmployeeInfo: this.updateEmployeeDetails
-    }
-  }
+// class App extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       data: {
+//         Id: 51772545,
+//         Name: "Saravana",
+//         Location: "Chennai",
+//         Salary: "15000"
+//       },
+//       changeEmployeeInfo: this.updateEmployeeDetails
+//     }
+//   }
 
-  updateEmployeeDetails = () => {
-    this.setState({data: {
-      Id: '51772532'
-    }});
-  }
-  render() {
-    return <div>
-      <h2>Welcome to App Component</h2>
-      <p>{this.state.Id}</p>
-      <EmployeeContext.Provider value={this.state}>
-        <Employee />
-      </EmployeeContext.Provider>      
-    </div>;
-  }
+//   updateEmployeeDetails = () => {
+//     this.setState({data: {
+//       Id: '51772532'
+//     }});
+//   }
+//   render() {
+//     return <div>
+//       <h2>Welcome to App Component</h2>
+//       <p>{this.state.Id}</p>
+//       <EmployeeContext.Provider value={this.state}>
+//         <Employee />
+//       </EmployeeContext.Provider>      
+//     </div>;
+//   }
+// }
+
+// class Employee extends React.Component {
+//   render() {
+//     return <div>
+//       <h2>Welcome to Employee Component...</h2>      
+//       <EmployeeContext.Consumer>
+//         {data => {
+//           return data.data.Id;
+//         }}
+//       </EmployeeContext.Consumer>
+//       <Salary></Salary>
+//       <EmployeeContext.Consumer>
+//         {data=>{
+//           return <button onClick={data.changeEmployeeInfo}>Change</button>
+//         }}
+//       </EmployeeContext.Consumer>
+//     </div>;
+//   }
+// }
+
+// class Salary extends React.Component {
+//   render() {
+//     return <div>
+//       <h2>Welcome to Salary Component...</h2>
+//       <EmployeeContext.Consumer>
+//         {data => {
+//           return data.data.Id;
+//         }}
+//       </EmployeeContext.Consumer>
+//     </div>;
+//   }
+// }
+
+// const element = <App></App>
+
+// *********************************************************************************************************************************
+
+// Iterating over list of objects
+
+const employees = [
+  {Id: 51772545, Name: 'Saravana', Location: 'Chennai', Salary: 15000},
+  {Id: 51662374, Name: 'Elumalai', Location: 'Chennai', Salary: 15000},
+  {Id: 51790707, Name: 'Vinoth', Location: 'Chennai', Salary: 15000}
+];
+
+function EmployeeDisplay(props) {
+  return <div style={{border: "3px solid red"}}>
+    <p>
+      <label>Employee Id: <b>{props.data.Id}</b></label>
+    </p>
+    <p>
+      <label>Employee Name: <b>{props.data.Name}</b></label>
+    </p>
+    <p>
+      <label>Employee Location: <b>{props.data.Location}</b></label>
+    </p>
+  </div>
 }
 
-class Employee extends React.Component {
-  render() {
-    return <div>
-      <h2>Welcome to Employee Component...</h2>      
-      <EmployeeContext.Consumer>
-        {data => {
-          return data.data.Id;
-        }}
-      </EmployeeContext.Consumer>
-      <Salary></Salary>
-      <EmployeeContext.Consumer>
-        {data=>{
-          return <button onClick={data.changeEmployeeInfo}>Change</button>
-        }}
-      </EmployeeContext.Consumer>
-    </div>;
-  }
+function Employee(props) {
+  const empList = props.employeeList;
+
+  const listElements = empList.map((emp)=> {
+    return <EmployeeDisplay key={emp.Id} data={emp}></EmployeeDisplay>
+  });
+
+  return (<div>
+    {listElements}
+  </div>)
 }
 
-class Salary extends React.Component {
-  render() {
-    return <div>
-      <h2>Welcome to Salary Component...</h2>
-      <EmployeeContext.Consumer>
-        {data => {
-          return data.data.Id;
-        }}
-      </EmployeeContext.Consumer>
-    </div>;
-  }
-}
-
-const element = <App></App>
-
-
+const element = <Employee employeeList={employees}></Employee>
 
 ReactDOM.render(element, document.getElementById('root'));
