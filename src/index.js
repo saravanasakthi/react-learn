@@ -228,17 +228,29 @@ import './index.css';
 
 // component interaction using context
 
-export const EmployeeContext = React.createContext();
+export const EmployeeContext = React.createContext({
+  data: '',
+  changeEmployeeInfo: () => {}
+});
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Id: 51772545,
-      Name: "Saravana",
-      Location: "Chennai",
-      Salary: "15000"
+      data: {
+        Id: 51772545,
+        Name: "Saravana",
+        Location: "Chennai",
+        Salary: "15000"
+      },
+      changeEmployeeInfo: this.updateEmployeeDetails
     }
+  }
+
+  updateEmployeeDetails = () => {
+    this.setState({data: {
+      Id: '51772532'
+    }});
   }
   render() {
     return <div>
@@ -257,10 +269,15 @@ class Employee extends React.Component {
       <h2>Welcome to Employee Component...</h2>      
       <EmployeeContext.Consumer>
         {data => {
-          return data.Id;
+          return data.data.Id;
         }}
       </EmployeeContext.Consumer>
       <Salary></Salary>
+      <EmployeeContext.Consumer>
+        {data=>{
+          return <button onClick={data.changeEmployeeInfo}>Change</button>
+        }}
+      </EmployeeContext.Consumer>
     </div>;
   }
 }
@@ -271,7 +288,7 @@ class Salary extends React.Component {
       <h2>Welcome to Salary Component...</h2>
       <EmployeeContext.Consumer>
         {data => {
-          return data.Id;
+          return data.data.Id;
         }}
       </EmployeeContext.Consumer>
     </div>;
