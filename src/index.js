@@ -255,7 +255,7 @@ import './index.css';
 //   render() {
 //     return <div>
 //       <h2>Welcome to App Component</h2>
-//       <p>{this.state.Id}</p>
+//       <p>{this.state.data.Id}</p>
 //       <EmployeeContext.Provider value={this.state}>
 //         <Employee />
 //       </EmployeeContext.Provider>      
@@ -301,38 +301,92 @@ import './index.css';
 
 // Iterating over list of objects
 
-const employees = [
-  {Id: 51772545, Name: 'Saravana', Location: 'Chennai', Salary: 15000},
-  {Id: 51662374, Name: 'Elumalai', Location: 'Chennai', Salary: 15000},
-  {Id: 51790707, Name: 'Vinoth', Location: 'Chennai', Salary: 15000}
-];
+// const employees = [
+//   {Id: 51772545, Name: 'Saravana', Location: 'Chennai', Salary: 15000},
+//   {Id: 51662374, Name: 'Elumalai', Location: 'Chennai', Salary: 15000},
+//   {Id: 51790707, Name: 'Vinoth', Location: 'Chennai', Salary: 15000}
+// ];
 
-function EmployeeDisplay(props) {
-  return <div style={{border: "3px solid red"}}>
-    <p>
-      <label>Employee Id: <b>{props.data.Id}</b></label>
-    </p>
-    <p>
-      <label>Employee Name: <b>{props.data.Name}</b></label>
-    </p>
-    <p>
-      <label>Employee Location: <b>{props.data.Location}</b></label>
-    </p>
-  </div>
+// function EmployeeDisplay(props) {
+//   return <div style={{border: "3px solid red"}}>
+//     <p>
+//       <label>Employee Id: <b>{props.data.Id}</b></label>
+//     </p>
+//     <p>
+//       <label>Employee Name: <b>{props.data.Name}</b></label>
+//     </p>
+//     <p>
+//       <label>Employee Location: <b>{props.data.Location}</b></label>
+//     </p>
+//   </div>
+// }
+
+// function Employee(props) {
+//   const empList = props.employeeList;
+
+//   const listElements = empList.map((emp)=> {
+//     return <EmployeeDisplay key={emp.Id} data={emp}></EmployeeDisplay>
+//   });
+
+//   return (<div>
+//     {listElements}
+//   </div>)
+// }
+
+// const element = <Employee employeeList={employees}></Employee>
+
+
+// **************************************************************************************************************************
+
+// REST API call
+
+class EmployeeComponent extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      employees: []
+    }
+  }
+
+  //will run when the respective component is rendered to DOM
+  componentDidMount() {     
+    fetch(`http://10.126.243.9:9002/getEmployee/51772545`).then(
+      res=> res.json()
+    ).then(result=>{
+      this.setState({employees: result.Data})
+    })
+
+  }
+
+  render () {
+    console.log(this.state.employees)
+    return <div>
+      <h2>Employee Details</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <td>Employee No</td>
+            <td>Name</td>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            this.state.employees.map((emp)=>{
+              return <tr key={emp.EmployeeNo}>
+                <td>{emp.EmployeeNo}</td>
+                <td>{emp.Name}</td>
+              </tr>
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
 }
 
-function Employee(props) {
-  const empList = props.employeeList;
+const element = <EmployeeComponent> </EmployeeComponent>
 
-  const listElements = empList.map((emp)=> {
-    return <EmployeeDisplay key={emp.Id} data={emp}></EmployeeDisplay>
-  });
-
-  return (<div>
-    {listElements}
-  </div>)
-}
-
-const element = <Employee employeeList={employees}></Employee>
 
 ReactDOM.render(element, document.getElementById('root'));
